@@ -310,7 +310,8 @@ class server
                  }
               }
 
-              if ( voltage >= 0 && design_voltage >= 0 ) {
+              // voltage == 0 seems to be missing data from the system, so ignore such measurements -- v4hn@20200715
+              if ( voltage > 0 && design_voltage >= 0 ) {
                  if( voltage < design_voltage/2 ) {
                     stat.mergeSummary(diagnostic_msgs::DiagnosticStatus::WARN, "Battery voltage too low, please replace.");
                  }
@@ -342,9 +343,10 @@ class server
                     }
                 }
 
-              // Check for battery status code, not sure if this works.
-              if (os.server.battery[xx].battery_register[0x16] & 0x1000)
-                  stat.mergeSummary(diagnostic_msgs::DiagnosticStatus::WARN, "Over Temp Alarm");
+              // This *does not* work as expected - it reported temperature warnings for 26.5C over here -- v4hn@20200720
+              //// Check for battery status code, not sure if this works.
+              //if (os.server.battery[xx].battery_register[0x16] & 0x1000)
+              //    stat.mergeSummary(diagnostic_msgs::DiagnosticStatus::WARN, "Over Temp Alarm");
 
               // Report a console warning if battery is "No Good"
               // This may be a problem with the battery, but we're not sure.
